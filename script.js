@@ -1,22 +1,29 @@
 //Global Constants
-const clueHoldTime = 1000; //how long to hold each clue's light/sound
 const cluePauseTime = 333; //how long to pause in between clues
 const nextClueWaitTime = 1000; //how long to wait before starting playback of the clue sequence
 
 //Global Variables
-var pattern = [2, 2, 4, 3, 2, 1, 2, 4];
+var pattern = [5, 2, 6, 4, 3, 1, 2, 4];
 var progress = 0; 
 var gamePlaying = false;
 var tonePlaying = false;
 var volume = 0.2;  //must be between 0.0 and 1.0
 var guessCounter = 0;
+var mistakes = 0;
 
+
+var clueHoldTime = 1000; //how long to hold each clue's light/sound
 
 function startGame(){
   //initialize game variables
+  clueHoldTime = 1000;
   progress = 0;
+  mistakes = 0;
   gamePlaying = true;
   
+  createRandomPattern();
+  document.getElementById("mistakes").innerHTML = mistakes;
+
   document.getElementById("startBtn").classList.add("hidden");
   document.getElementById("stopBtn").classList.remove("hidden");
   playClueSequence();
@@ -57,11 +64,12 @@ function playSingleClue(btn){
 
 function playClueSequence(){
   guessCounter = 0;
+  clueHoldTime -= 75;
   let delay = nextClueWaitTime; //set delay to initial wait time
   for(let i=0;i<=progress;i++){ // for each clue that is revealed so far
     console.log("play single clue: " + pattern[i] + " in " + delay + "ms")
     setTimeout(playSingleClue,delay,pattern[i]) // set a timeout to play that clue
-    delay += clueHoldTime 
+    delay += clueHoldTime;
     delay += cluePauseTime;
   }
 }
@@ -96,8 +104,21 @@ function guess(btn){
   
   //Guess is incorrect (NO)
   else{
-    loseGame();
+    mistakes++;
+    document.getElementById("mistakes").innerHTML = mistakes;
+    if(mistakes == 3){
+      loseGame();
+    }
+    console.log(mistakes);
   } 
+}
+
+
+
+function createRandomPattern(){
+  for(var i = 0; i < 8; i++){
+    pattern[i] = Math.floor(Math.random() * 6) + 1;
+  }
 }
 
 
@@ -106,10 +127,12 @@ function guess(btn){
 
 // Sound Synthesis Functions
 const freqMap = {
-  1: 261.6,
-  2: 329.6,
-  3: 392,
-  4: 466.2
+  1: 200,
+  2: 250,
+  3: 300,
+  4: 350,
+  5: 400,
+  6: 450
 }
 function playTone(btn,len){ 
   o.frequency.value = freqMap[btn]
