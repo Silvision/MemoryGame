@@ -36,7 +36,7 @@ The following **optional** features are implemented:
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
-![](your-link-here)
+![](https://github.com/Silvision/MemoryGame/blob/main/walkthrough.gif)
 
 
 ## Reflection Questions
